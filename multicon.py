@@ -148,7 +148,7 @@ def onclick_save():
 
 # Creating the main program window and all widgets.
 root = Tk()
-root.iconbitmap('@./mcico.xbm')
+#root.iconbitmap('@./mcico.xbm')
 root.resizable(0, 0)
 root.title("MultiCon")
 
