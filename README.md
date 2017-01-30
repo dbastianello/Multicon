@@ -22,6 +22,7 @@ Description: This program's purpose it to provide the user the ability to decode
 This tool is intended to be multi-platform eventually but has only been tested under Ubuntu 14.04, 14.10, 15.04 and Windows 8.1. The program is still under development thus problems may occur, these will eventually be corrected as my schedule allows.
           
 This program requires tkinter to function if under debian based system you need to install by issuing: 
-	sudo apt-get install python3-tk
+
+sudo apt-get install python3-tk
 
 If under windows installing python3 which can be found at python.org which comes with the tkinter api.
