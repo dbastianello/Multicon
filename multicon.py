@@ -30,7 +30,6 @@
 
 
 import platform
-import unicodedata
 from tkinter import *
 from tkinter import ttk
 
@@ -68,7 +67,6 @@ def mcon_win():
 # This definition deals with creating a gui file_picker using tkinter
 def file_picker():
     from tkinter.filedialog import askopenfilename
-
     return askopenfilename()
 
 
@@ -77,12 +75,12 @@ def load_data(file_name):
     if file_name is not "":
         with open(file_name, 'r') as file_contents:
             data = file_contents.read()
-
         input_text.delete(1.0, END)
         input_text.insert(INSERT, data)
 
 
-# This def deals with saving the file and appends .mcon to any filename thus reducing overwriting original file
+# This def deals with saving the file and appends .mcon to any filename thus reducing overwriting
+# original file.
 def save_file():
     from tkinter.filedialog import asksaveasfilename
 
@@ -91,23 +89,24 @@ def save_file():
         outFile.write(output_text.get(1.0, END))
 
 
-# This definition has as input either, manually entered/pasted text in the input text box or the file contents provided
-# from the file_picker definition.
-# The decoder currently only supports ASCII and will eventually evolve to support Unicode. It also only
-# deals with % and # delimiters to detect the ASCII within the strings provided.
+# This definition has as input either, manually entered/pasted text in the input text box or the file
+# contents provided from the file_picker definition.
+#
+# The encoder currently only supports ASCII hex and UTF-8 and will eventually evolve to support UTF-16.
+# It also only deals with none, \x, % and # delimiters to detect the ASCII within the strings provided.
 def decode(data):
     output_text.delete(1.0, END)
-    check=delimiter_select.get()[0]
+    check = delimiter_select.get()[0]
     # below is needed since I do not want tmp_data to be a global variable
-    tmp_data=""
+    tmp_data = ""
 
     if check is "\x5c":
         for i in data:
             if i is "\x5c":
-                tmp_data=tmp_data+"0"
+                tmp_data = tmp_data + "0"
             else:
-                tmp_data=tmp_data+i
-        data=tmp_data
+                tmp_data = tmp_data + i
+        data = tmp_data
         search_string = "0x([A-Fa-f0-9]{2})"
     else:
         search_string = delimiter_select.get() + "([A-Fa-f0-9]{2})"
@@ -118,22 +117,30 @@ def decode(data):
         output_text.insert(INSERT, decoded_text)
 
 
-# This definition has as input either, manually entered/pasted text in the input text box or the file contents provided
-# from the file_picker definition.
-# The encoder currently only supports ASCII and will eventually evolve to support Unicode. It also only
-# deals with % and # delimiters to detect the ASCII within the strings provided.
+# This definition has as input either, manually entered/pasted text in the input text box or the file
+# contents provided from the file_picker definition.
+#
+# The encoder currently only supports ASCII hex and UTF-8 and will eventually evolve to support UTF-16.
+# It also only deals with none, \x, % and # delimiters to detect the ASCII within the strings provided.
 def encode():
     data = input_text.get(1.0, END)
     size = len(data) - 1
     output_text.delete(1.0, END)
-    encode_text = ""
+    encode_text = None
 
-    for i in range(0, size):
-        encode_text = encode_text + delimiter_select.get() + format(ord(data[i]), "x")
+    if delimiter_select.get() == "none":
+        for i in range(0, size):
+            if i == 0:
+                encode_text = encode_text + format(ord(data[i]), "x")
+            encode_text = encode_text + " " + format(ord(data[i]), "x")
+    else:
+        for i in range(0, size):
+            encode_text = encode_text + delimiter_select.get() + format(ord(data[i]), "x")
 
     if encode_text is not None:
         output_text.insert(INSERT, encode_text)
-
+    else:
+        output_text.insert(INSERT, "\t\tDid you enter anything?\n\t\t         . .\n\t\t          v")
 
 # Below are the buttons function calls when clicked
 def onclick_open():
@@ -145,7 +152,7 @@ def onclick_decode():
 
 
 def onclick_encode():
-    encode_button.configure(command=encode() )
+    encode_button.configure(command=encode())
 
 
 def onclick_save():
@@ -154,7 +161,7 @@ def onclick_save():
 
 # Creating the main program window and all widgets.
 root = Tk()
-#root.iconbitmap('@./mcico.xbm')
+# root.iconbitmap('@./mcico.xbm')
 root.resizable(0, 0)
 root.title("MultiCon")
 
@@ -168,7 +175,7 @@ output_text = Text(main_paine, width=85, height=15)
 
 delimiter_label = ttk.Label(main_paine, text="Delimiter")
 delimiter_select = StringVar(main_paine)
-delimiter_menu = ttk.OptionMenu(main_paine, delimiter_select, "%", "%", "#","\\x")
+delimiter_menu = ttk.OptionMenu(main_paine, delimiter_select, "none", "none", "%", "#", "\\x")
 
 open_button = ttk.Button(main_paine, text="Open", command=onclick_open)
 decode_button = ttk.Button(main_paine, text="Decode", command=onclick_decode)
@@ -182,6 +189,6 @@ if platform.system() == "Linux":
 elif platform.system() == "Windows":
     mcon_win()
 else:
-    print("Operating System is not supported(yet!). Your OS is detected as: "+platform.system())
+    print("Operating System is not supported(yet!). Your OS is detected as: " + platform.system())
 
 root.mainloop()
