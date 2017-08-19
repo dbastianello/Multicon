@@ -20,7 +20,7 @@
 #           environments to help with packet breakdowns and what ever "Other" purposes the user can think of.
 #
 #              This tool is intended to be multi-platform eventually but has only been tested under Ubuntu 14.04, 
-#           14.10, 15.04 and Windows 8.1, 10 . The program is still under development thus problems may occur, these
+#           14.10, 15.04, 16.04, 17.10 and Windows 8.1, 10 . The program is still under development thus problems may occur, these
 #           will eventually be corrected as my schedule allows.
 #           
 #           This program requires tkinter to function if under debian based system you need to install by issuing: 
